@@ -1,35 +1,42 @@
 # Telco Customer Churn
 
-Projeto de estudo de ciencia de dados para analisar, modelar e visualizar risco de churn em clientes de telecomunicacoes usando Python, scikit-learn, TensorFlow/Keras e notebooks Jupyter.
+Projeto de estudo de ciencia de dados para analisar risco de churn em clientes de telecomunicacoes usando Python, scikit-learn, TensorFlow/Keras e notebooks Jupyter.
 
-O objetivo final nao e apenas prever uma classe binaria de churn. A proposta principal e estimar a probabilidade de cancelamento de cada cliente e transformar essa probabilidade em faixas de acao:
+O foco do projeto e aprender o fluxo completo de trabalho:
 
-- `Low`: sem acao imediata
-- `Medium`: acao leve ou monitoramento
-- `High`: acao direta de retencao
+1. entender os dados;
+2. preparar as variaveis;
+3. treinar um modelo de rede neural;
+4. avaliar os resultados;
+5. gerar probabilidades de churn;
+6. visualizar os resultados em Python.
 
-Essa abordagem e mais util para uma tomada de decisao de negocio, porque permite priorizar clientes por nivel de risco em vez de tratar todos como apenas "churn" ou "nao churn".
+Em vez de tratar o problema apenas como uma previsao binaria, o projeto trabalha principalmente com a probabilidade de churn (`churn_prob`) e com faixas de acao (`risk_band`).
 
 ## Dataset
 
-O projeto usa o dataset **Telco Customer Churn**, originalmente disponibilizado no Kaggle.
+O dataset usado e o **Telco Customer Churn**, com 7.043 clientes e 21 colunas.
 
-Arquivo principal:
+Arquivo original:
 
 ```text
 data/WA_Fn-UseC_-Telco-Customer-Churn.csv
 ```
 
-A base possui 7.043 clientes e 21 colunas. A variavel-alvo original e `Churn`, com valores `Yes` e `No`.
+A variavel-alvo original e `Churn`, com valores `Yes` e `No`.
 
-Principais grupos de variaveis:
+Algumas colunas importantes:
 
-- identificador: `customerID`
-- numericas: `tenure`, `MonthlyCharges`, `TotalCharges`
-- categoricas: `Contract`, `InternetService`, `PaymentMethod`, entre outras
-- alvo: `Churn`
+- `customerID`: identificador do cliente
+- `tenure`: tempo de permanencia
+- `MonthlyCharges`: cobranca mensal
+- `TotalCharges`: cobranca total acumulada
+- `Contract`: tipo de contrato
+- `InternetService`: tipo de servico de internet
+- `PaymentMethod`: metodo de pagamento
+- `Churn`: indica se o cliente cancelou
 
-Um ponto importante do dataset e que `TotalCharges` vem como texto e possui alguns valores em branco. Por isso, essa coluna precisa ser convertida para numerica antes da modelagem.
+Um detalhe importante e que `TotalCharges` vem como texto no CSV original. Por isso, essa coluna e convertida para numero no pre-processamento.
 
 ## Estrutura do projeto
 
@@ -39,8 +46,6 @@ Telco Customer Churn/
 |   +-- WA_Fn-UseC_-Telco-Customer-Churn.csv
 |   +-- df_eda.csv
 |   +-- churn_predictions.csv
-+-- docs/
-|   +-- guia-churn.md
 +-- models/
 |   +-- churn_nn.keras
 |   +-- preprocessor.joblib
@@ -55,58 +60,35 @@ Telco Customer Churn/
 +-- README.md
 ```
 
-## Fluxo do projeto
+## Notebooks
 
-O projeto esta organizado em tres etapas principais.
+### `notebooks/01_eda.ipynb`
 
-### 1. Analise exploratoria
+Notebook de analise exploratoria.
 
-Notebook:
+Ele e usado para:
 
-```text
-notebooks/01_eda.ipynb
-```
-
-Objetivo:
-
-- carregar a base original;
-- entender estrutura, tipos de dados e valores iniciais;
+- carregar o dataset original;
+- entender tipos de dados e estrutura da base;
 - tratar `TotalCharges`;
-- analisar a distribuicao da variavel `Churn`;
-- investigar churn por contrato, tempo de permanencia e servico de internet;
-- gerar uma base enriquecida em `data/df_eda.csv`.
+- analisar a distribuicao de `Churn`;
+- observar churn por contrato, tempo de permanencia e servico de internet;
+- gerar `data/df_eda.csv`.
 
-Principais aprendizados dessa etapa:
+### `notebooks/02_model.ipynb`
 
-- a base e desbalanceada;
-- clientes com contrato mensal tendem a cancelar mais;
-- clientes com menor tempo de permanencia apresentam maior risco;
-- `TotalCharges` precisa de tratamento antes de entrar no modelo.
+Notebook de modelagem.
 
-### 2. Modelagem
+Ele e usado para:
 
-Notebook:
-
-```text
-notebooks/02_model.ipynb
-```
-
-Objetivo:
-
-- carregar os dados limpos;
+- carregar os dados tratados;
 - separar features, alvo e identificadores;
-- dividir os dados em treino e teste;
-- aplicar pre-processamento com `ColumnTransformer`;
-- treinar uma rede neural MLP com TensorFlow/Keras;
+- dividir treino e teste;
+- aplicar pre-processamento;
+- treinar uma rede neural MLP com Keras;
 - avaliar AUC, precision, recall e matriz de confusao;
-- estudar diferentes thresholds;
+- estudar thresholds;
 - salvar o modelo e o pre-processador.
-
-Modelo usado:
-
-```text
-Rede neural MLP para classificacao binaria
-```
 
 Arquivos gerados:
 
@@ -115,73 +97,57 @@ models/churn_nn.keras
 models/preprocessor.joblib
 ```
 
-Resultado interpretado no notebook:
+### `notebooks/03_visualizations.ipynb`
 
-- o modelo gera uma probabilidade de churn;
-- thresholds menores aumentam recall, mas geram mais falsos positivos;
-- thresholds maiores aumentam precision, mas deixam passar mais churns;
-- uma estrategia por faixas de risco e mais adequada para o objetivo do projeto.
+Notebook de visualizacoes.
 
-### 3. Visualizacoes
+Ele usa o CSV final com as probabilidades do modelo para analisar:
 
-Notebook:
+- distribuicao das faixas de risco;
+- probabilidade media por tempo de permanencia;
+- risco por tipo de contrato;
+- receita mensal associada a clientes de alto risco;
+- clientes prioritarios para acao de retencao.
 
-```text
-notebooks/03_visualizations.ipynb
-```
-
-Objetivo:
-
-- carregar `data/churn_predictions.csv`;
-- visualizar a distribuicao das faixas de risco;
-- analisar probabilidade media por tempo de permanencia;
-- comparar risco por tipo de contrato;
-- estimar receita mensal em risco;
-- listar clientes prioritarios para acao de retencao.
-
-Esse notebook substitui a ideia inicial de criar um dashboard no Power BI. As visualizacoes passam a ser feitas diretamente em Python.
-
-## Codigo reutilizavel
+## Codigo em `src`
 
 ### `src/preprocess.py`
 
-Contem a logica de preparacao dos dados.
+Centraliza a preparacao dos dados.
 
-Responsabilidades:
+Principais responsabilidades:
 
 - definir colunas numericas, categoricas e binarias;
-- carregar o CSV;
-- converter `TotalCharges` para numerico;
+- carregar a base original;
+- converter `TotalCharges` para numero;
 - transformar `Churn` em alvo numerico:
   - `Yes` vira `1`;
   - `No` vira `0`;
-- construir o pre-processador usado no treino e na predicao.
-
-O pre-processador aplica:
-
-- `StandardScaler` em variaveis numericas;
-- `OneHotEncoder` em variaveis categoricas;
-- passagem direta para `SeniorCitizen`.
+- criar o pre-processador com:
+  - `StandardScaler` para colunas numericas;
+  - `OneHotEncoder` para colunas categoricas;
+  - passagem direta para `SeniorCitizen`.
 
 ### `src/predict.py`
 
-Usa o modelo treinado para gerar o arquivo final de predicoes.
+Script opcional para gerar um CSV com os resultados do modelo treinado.
 
-Entrada:
+Ele nao treina o modelo. Ele carrega:
 
 ```text
-data/WA_Fn-UseC_-Telco-Customer-Churn.csv
 models/churn_nn.keras
 models/preprocessor.joblib
 ```
 
-Saida:
+Depois aplica o modelo na base original e gera:
 
 ```text
 data/churn_predictions.csv
 ```
 
-Colunas principais geradas:
+Esse CSV e util para analisar os resultados fora do notebook de modelagem ou para alimentar o notebook de visualizacoes.
+
+Principais colunas geradas:
 
 - `customerID`
 - `churn_real`
@@ -196,7 +162,7 @@ Colunas principais geradas:
 - `InternetService`
 - `PaymentMethod`
 
-Regras de faixa de risco:
+As faixas de risco sao criadas a partir de `churn_prob`:
 
 ```text
 churn_prob < 0.50          -> Low
@@ -204,17 +170,23 @@ churn_prob < 0.50          -> Low
 churn_prob >= 0.68        -> High
 ```
 
+As acoes recomendadas sao:
+
+```text
+Low    -> No immediate action
+Medium -> Light action / monitoring
+High   -> Direct retention action
+```
+
 ## Como executar
 
-### 1. Ativar o ambiente
-
-Exemplo usando conda:
+Ative o ambiente Python usado no projeto. Exemplo com conda:
 
 ```powershell
 conda activate NovelInsight
 ```
 
-O ambiente precisa conter, no minimo:
+Dependencias principais:
 
 - pandas
 - numpy
@@ -225,9 +197,7 @@ O ambiente precisa conter, no minimo:
 - joblib
 - jupyter
 
-### 2. Rodar os notebooks
-
-Execute nesta ordem:
+Execute os notebooks nesta ordem:
 
 ```text
 notebooks/01_eda.ipynb
@@ -235,33 +205,27 @@ notebooks/02_model.ipynb
 notebooks/03_visualizations.ipynb
 ```
 
-O notebook `02_model.ipynb` deve ser executado antes do `src/predict.py`, porque ele gera o modelo e o pre-processador salvos.
-
-### 3. Gerar o CSV final
-
-Na raiz do projeto, execute:
+Se quiser regenerar o CSV com os resultados do modelo, rode na raiz do projeto:
 
 ```powershell
 python -m src.predict
 ```
 
-Ou, se estiver usando o caminho completo do Python do ambiente:
+Ou execute diretamente com o Python do ambiente:
 
 ```powershell
 C:/Users/marci/miniconda3/envs/NovelInsight/python.exe src/predict.py
 ```
 
-Ao final, o script deve gerar:
+## Interpretacao dos resultados
+
+A coluna mais importante do CSV final e:
 
 ```text
-data/churn_predictions.csv
+churn_prob
 ```
 
-com 7.043 linhas.
-
-## Interpretacao do resultado
-
-O campo mais importante do arquivo final e `churn_prob`.
+Ela representa a probabilidade estimada de churn para cada cliente.
 
 Exemplo:
 
@@ -271,55 +235,26 @@ Exemplo:
 0.82 -> alto risco
 ```
 
-A coluna `risk_band` transforma essa probabilidade em uma faixa operacional. A coluna `recommended_action` traduz a faixa em uma acao sugerida.
+O projeto usa `risk_band` e `recommended_action` porque uma probabilidade e mais informativa do que uma classificacao simples em `0` ou `1`.
 
-Essa estrutura ajuda a responder perguntas como:
-
-- quantos clientes estao em alto risco?
-- quais contratos concentram mais clientes em alto risco?
-- clientes novos tem maior probabilidade media de churn?
-- qual receita mensal esta associada aos clientes de alto risco?
-- quais clientes devem ser priorizados em uma acao de retencao?
-
-## Decisoes importantes do projeto
-
-### Por que nao usar apenas `churn_pred`?
-
-Uma previsao binaria perde informacao.
-
-Dois clientes com probabilidades `0.51` e `0.91` poderiam ser classificados como churn, mas o segundo e claramente mais prioritario. Por isso, o projeto usa probabilidade e faixas de acao.
-
-### Por que salvar o pre-processador?
-
-O modelo foi treinado com dados escalados e codificados por one-hot encoding. Para prever novos dados corretamente, e necessario aplicar exatamente o mesmo pre-processamento usado no treino.
-
-Por isso, o projeto salva:
-
-```text
-models/preprocessor.joblib
-```
-
-### Por que usar `class_weight` no treino?
-
-A classe churn e menor que a classe nao churn. Sem compensacao, o modelo poderia favorecer demais a classe majoritaria. O uso de pesos de classe ajuda o modelo a prestar mais atencao nos exemplos de cancelamento.
-
-## Possiveis melhorias
-
-- comparar a rede neural com regressao logistica;
-- testar outros thresholds;
-- calibrar as probabilidades;
-- adicionar SHAP para explicabilidade;
-- criar mais visualizacoes no `03_visualizations.ipynb`;
-- transformar as visualizacoes em um relatorio HTML;
-- criar um pipeline unico para treino e predicao.
+Por exemplo, dois clientes com `churn_prob` de `0.51` e `0.91` poderiam ser classificados como risco, mas o cliente com `0.91` deve ser priorizado.
 
 ## Estado atual
 
-O projeto atualmente possui:
+O projeto possui:
 
-- analise exploratoria documentada;
+- analise exploratoria em notebook;
 - modelo neural treinado;
 - pre-processador salvo;
-- script de predicao funcionando;
-- CSV final com probabilidade de churn e faixas de acao;
+- script opcional para gerar CSV com probabilidades;
+- CSV final com faixas de risco e acoes recomendadas;
 - notebook de visualizacoes em Python.
+
+## Possiveis proximos passos
+
+- melhorar as visualizacoes no `03_visualizations.ipynb`;
+- comparar a rede neural com um modelo baseline, como regressao logistica;
+- testar outros thresholds para as faixas de risco;
+- calibrar as probabilidades do modelo;
+- adicionar explicabilidade com SHAP;
+- criar um relatorio final com os principais insights.
