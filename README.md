@@ -1,21 +1,21 @@
 # Telco Customer Churn
 
-Projeto de estudo de ciencia de dados para analisar risco de churn em clientes de telecomunicacoes usando Python, scikit-learn, TensorFlow/Keras e notebooks Jupyter.
+Projeto de estudo de ciência de dados para analisar risco de churn em clientes de telecomunicações usando Python, scikit-learn, TensorFlow/Keras e notebooks Jupyter.
 
-O foco do projeto e aprender o fluxo completo de trabalho:
+O foco do projeto é aprender o fluxo completo de trabalho:
 
 1. entender os dados;
-2. preparar as variaveis;
+2. preparar as variáveis;
 3. treinar um modelo de rede neural;
 4. avaliar os resultados;
 5. gerar probabilidades de churn;
 6. visualizar os resultados em Python.
 
-Em vez de tratar o problema apenas como uma previsao binaria, o projeto trabalha principalmente com a probabilidade de churn (`churn_prob`) e com faixas de acao (`risk_band`).
+Em vez de tratar o problema apenas como uma previsão binária, o projeto trabalha principalmente com a probabilidade de churn (`churn_prob`) e com faixas de ação (`risk_band`).
 
 ## Dataset
 
-O dataset usado e o **Telco Customer Churn**, com 7.043 clientes e 21 colunas.
+O dataset usado é o **Telco Customer Churn**, com 7.043 clientes e 21 colunas.
 
 Arquivo original:
 
@@ -23,20 +23,20 @@ Arquivo original:
 data/WA_Fn-UseC_-Telco-Customer-Churn.csv
 ```
 
-A variavel-alvo original e `Churn`, com valores `Yes` e `No`.
+A variável-alvo original é `Churn`, com valores `Yes` e `No`.
 
 Algumas colunas importantes:
 
 - `customerID`: identificador do cliente
-- `tenure`: tempo de permanencia
-- `MonthlyCharges`: cobranca mensal
-- `TotalCharges`: cobranca total acumulada
+- `tenure`: tempo de permanência
+- `MonthlyCharges`: cobrança mensal
+- `TotalCharges`: cobrança total acumulada
 - `Contract`: tipo de contrato
-- `InternetService`: tipo de servico de internet
-- `PaymentMethod`: metodo de pagamento
+- `InternetService`: tipo de serviço de internet
+- `PaymentMethod`: método de pagamento
 - `Churn`: indica se o cliente cancelou
 
-Um detalhe importante e que `TotalCharges` vem como texto no CSV original. Por isso, essa coluna e convertida para numero no pre-processamento.
+Um detalhe importante é que `TotalCharges` vem como texto no CSV original. Por isso, essa coluna é convertida para número no pré-processamento.
 
 ## Estrutura do projeto
 
@@ -57,6 +57,7 @@ Telco Customer Churn/
 |   +-- __init__.py
 |   +-- preprocess.py
 |   +-- predict.py
++-- requirements.txt
 +-- README.md
 ```
 
@@ -64,31 +65,31 @@ Telco Customer Churn/
 
 ### `notebooks/01_eda.ipynb`
 
-Notebook de analise exploratoria.
+Notebook de análise exploratória.
 
-Ele e usado para:
+Ele é usado para:
 
 - carregar o dataset original;
 - entender tipos de dados e estrutura da base;
 - tratar `TotalCharges`;
-- analisar a distribuicao de `Churn`;
-- observar churn por contrato, tempo de permanencia e servico de internet;
+- analisar a distribuição de `Churn`;
+- observar churn por contrato, tempo de permanência e serviço de internet;
 - gerar `data/df_eda.csv`.
 
 ### `notebooks/02_model.ipynb`
 
 Notebook de modelagem.
 
-Ele e usado para:
+Ele é usado para:
 
 - carregar os dados tratados;
 - separar features, alvo e identificadores;
 - dividir treino e teste;
-- aplicar pre-processamento;
+- aplicar pré-processamento;
 - treinar uma rede neural MLP com Keras;
-- avaliar AUC, precision, recall e matriz de confusao;
+- avaliar AUC, precision, recall e matriz de confusão;
 - estudar thresholds;
-- salvar o modelo e o pre-processador.
+- salvar o modelo e o pré-processador.
 
 Arquivos gerados:
 
@@ -99,40 +100,40 @@ models/preprocessor.joblib
 
 ### `notebooks/03_visualizations.ipynb`
 
-Notebook de visualizacoes.
+Notebook de visualizações.
 
 Ele usa o CSV final com as probabilidades do modelo para analisar:
 
-- distribuicao das faixas de risco;
-- probabilidade media por tempo de permanencia;
+- distribuição das faixas de risco;
+- probabilidade média por tempo de permanência;
 - risco por tipo de contrato;
 - receita mensal associada a clientes de alto risco;
-- clientes prioritarios para acao de retencao.
+- clientes prioritários para ação de retenção.
 
-## Codigo em `src`
+## Código em `src`
 
 ### `src/preprocess.py`
 
-Centraliza a preparacao dos dados.
+Centraliza a preparação dos dados.
 
 Principais responsabilidades:
 
-- definir colunas numericas, categoricas e binarias;
+- definir colunas numéricas, categóricas e binárias;
 - carregar a base original;
-- converter `TotalCharges` para numero;
-- transformar `Churn` em alvo numerico:
+- converter `TotalCharges` para número;
+- transformar `Churn` em alvo numérico:
   - `Yes` vira `1`;
   - `No` vira `0`;
-- criar o pre-processador com:
-  - `StandardScaler` para colunas numericas;
-  - `OneHotEncoder` para colunas categoricas;
+- criar o pré-processador com:
+  - `StandardScaler` para colunas numéricas;
+  - `OneHotEncoder` para colunas categóricas;
   - passagem direta para `SeniorCitizen`.
 
 ### `src/predict.py`
 
 Script opcional para gerar um CSV com os resultados do modelo treinado.
 
-Ele nao treina o modelo. Ele carrega:
+Ele não treina o modelo. Ele carrega:
 
 ```text
 models/churn_nn.keras
@@ -145,7 +146,7 @@ Depois aplica o modelo na base original e gera:
 data/churn_predictions.csv
 ```
 
-Esse CSV e util para analisar os resultados fora do notebook de modelagem ou para alimentar o notebook de visualizacoes.
+Esse CSV é útil para analisar os resultados fora do notebook de modelagem ou para alimentar o notebook de visualizações.
 
 Principais colunas geradas:
 
@@ -162,7 +163,7 @@ Principais colunas geradas:
 - `InternetService`
 - `PaymentMethod`
 
-As faixas de risco sao criadas a partir de `churn_prob`:
+As faixas de risco são criadas a partir de `churn_prob`:
 
 ```text
 churn_prob < 0.50          -> Low
@@ -170,7 +171,7 @@ churn_prob < 0.50          -> Low
 churn_prob >= 0.68        -> High
 ```
 
-As acoes recomendadas sao:
+As ações recomendadas são:
 
 ```text
 Low    -> No immediate action
@@ -180,46 +181,78 @@ High   -> Direct retention action
 
 ## Como executar
 
-Ative o ambiente Python usado no projeto. Exemplo com conda:
+### 1. Criar e ativar um ambiente virtual
+
+Na raiz do projeto, crie um ambiente virtual:
 
 ```powershell
-conda activate NovelInsight
+python -m venv .venv
 ```
 
-Dependencias principais:
+Ative o ambiente no PowerShell:
 
-- pandas
-- numpy
-- scikit-learn
-- tensorflow
-- matplotlib
-- seaborn
-- joblib
-- jupyter
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
 
-Execute os notebooks nesta ordem:
+Atualize o `pip` e instale as dependências:
+
+```powershell
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+### 2. Abrir os notebooks
+
+Com o ambiente ativo, inicie o Jupyter:
+
+```powershell
+jupyter notebook
+```
+
+Execute primeiro:
 
 ```text
 notebooks/01_eda.ipynb
 notebooks/02_model.ipynb
-notebooks/03_visualizations.ipynb
 ```
 
-Se quiser regenerar o CSV com os resultados do modelo, rode na raiz do projeto:
+O notebook `02_model.ipynb` treina o modelo e salva:
+
+```text
+models/churn_nn.keras
+models/preprocessor.joblib
+```
+
+### 3. Gerar o CSV com os resultados do modelo
+
+Depois de treinar e salvar o modelo, rode na raiz do projeto:
 
 ```powershell
 python -m src.predict
 ```
 
-Ou execute diretamente com o Python do ambiente:
+Esse comando gera:
 
-```powershell
-C:/Users/marci/miniconda3/envs/NovelInsight/python.exe src/predict.py
+```text
+data/churn_predictions.csv
 ```
 
-## Interpretacao dos resultados
+Esse arquivo contém as probabilidades calculadas pelo modelo, as faixas de risco e as ações recomendadas.
 
-A coluna mais importante do CSV final e:
+### 4. Rodar o notebook de visualizações
+
+Depois que `data/churn_predictions.csv` existir, execute:
+
+```text
+notebooks/03_visualizations.ipynb
+```
+
+Esse notebook usa o CSV gerado pelo `predict.py` para criar as visualizações em Python.
+
+## Interpretação dos resultados
+
+A coluna mais importante do CSV final é:
 
 ```text
 churn_prob
@@ -231,30 +264,10 @@ Exemplo:
 
 ```text
 0.12 -> baixo risco
-0.56 -> risco medio
+0.56 -> risco médio
 0.82 -> alto risco
 ```
 
-O projeto usa `risk_band` e `recommended_action` porque uma probabilidade e mais informativa do que uma classificacao simples em `0` ou `1`.
+O projeto usa `risk_band` e `recommended_action` porque uma probabilidade é mais informativa do que uma classificação simples em `0` ou `1`.
 
 Por exemplo, dois clientes com `churn_prob` de `0.51` e `0.91` poderiam ser classificados como risco, mas o cliente com `0.91` deve ser priorizado.
-
-## Estado atual
-
-O projeto possui:
-
-- analise exploratoria em notebook;
-- modelo neural treinado;
-- pre-processador salvo;
-- script opcional para gerar CSV com probabilidades;
-- CSV final com faixas de risco e acoes recomendadas;
-- notebook de visualizacoes em Python.
-
-## Possiveis proximos passos
-
-- melhorar as visualizacoes no `03_visualizations.ipynb`;
-- comparar a rede neural com um modelo baseline, como regressao logistica;
-- testar outros thresholds para as faixas de risco;
-- calibrar as probabilidades do modelo;
-- adicionar explicabilidade com SHAP;
-- criar um relatorio final com os principais insights.
